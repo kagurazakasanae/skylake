@@ -172,7 +172,8 @@ class SkylakeServer(object):
     def start_response(self, status, response_headers=[]):
         server_headers = [
             ('Server', 'Skylake/0.1'),
-            ('Date', time.strftime('%a, %d %b %Y %H:%M:%S GMT',time.localtime(time.time()-28800)))
+            ('Date', time.strftime('%a, %d %b %Y %H:%M:%S GMT',time.localtime(time.time()-28800))),
+            ('Vary', 'Accept-Encoding')
         ]
         self.headers_array = [status, get_status_info(status), response_headers+server_headers]
     
