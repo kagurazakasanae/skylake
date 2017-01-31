@@ -79,7 +79,12 @@ class SkylakeServer(object):
                     return False
                 
         self.req_body = unquote(self.req_body)
-        SRH = SkylakeResponseHandler.SkylakeResponseHandler(self.get_env())
+        try:
+            SRH = SkylakeResponseHandler.SkylakeResponseHandler(self.get_env())
+        except:
+            self.log_error('[ERROR]ResponseHandler reported an error')
+            self.set_error(500)
+            return False
         status, response_headers, response_body, no_CT = SRH.response_handler()
         if self.server_config['ENABLE_LOG'] == True:
             try:

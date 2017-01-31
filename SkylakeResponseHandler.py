@@ -8,7 +8,7 @@ class SkylakeResponseHandler(object):
     def __init__(self, env):
         self.config = get_server_config()
         if type(self.config) != dict:
-            return str(500), [], 'Server crashed, please try again later', False
+            raise Exception("Config load error")
         
         self.env = env
         del self.config['MAX_LENGTH']
@@ -22,7 +22,7 @@ class SkylakeResponseHandler(object):
                 del self.config['GZIP_MIN']
                 del self.config['GZIP_TYPE']
             except:
-                return self.set_error(500, 'Server Config load failed: GZIP config error')
+                raise Exception("GZIP config error")
         else:
             self.gzip = False
             
