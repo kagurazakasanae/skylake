@@ -1,6 +1,8 @@
 #-*- coding: utf-8 -*-
 
 def get_status_info(status):
+    if type(status) != str:
+        status = str(status)
     status_code = {}
     status_code['100'] = 'Continue'
     status_code['200'] = 'OK'

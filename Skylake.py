@@ -148,7 +148,7 @@ class SkylakeServer(object):
                 if 'Content-Length' in self.req_headers.keys():
                     try:
                         self.req_body_length = int(self.req_headers['Content-Length'])
-                        if self.req_body_length > self.server_config['TIMED_OUT']:
+                        if self.req_body_length > self.server_config['MAX_LENGTH']:
                             self.set_error(413)
                             return False
                     except ValueError:
