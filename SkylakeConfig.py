@@ -45,10 +45,11 @@ def get_server_config():
     config['ENABLE_LOG'] = False
     config['LOG_PATH'] = 'G:/skylake.log'
     config['0'] = {}
-    config['0']['MODE'] = 'BASIC'
-    config['0']['HOME_PATH'] = 'G:/'
+    config['0']['MODE'] = 'CGI'
+    config['0']['CGI_SUFFIX'] = {'.py': 'python.exe','.php': 'php-cgi.exe'}
+    config['0']['HOME_PATH'] = 'D:/phpstudy/www111'
     config['0']['DENIED_SUFFIX'] = ('.py')
-    config['0']['DEFAULT_PAGE'] = 'index.html,index.htm'
+    config['0']['DEFAULT_PAGE'] = 'index.php,index.html,index.htm'
     config['0']['DIR_LIST'] = True
     config['0']['BIND_HOST'] = '127.0.0.1:8888'
     return config
