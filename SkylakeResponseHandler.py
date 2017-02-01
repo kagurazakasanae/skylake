@@ -226,7 +226,7 @@ class SkylakeResponseHandler(object):
         
         os.putenv('CONTENT_TYPE', CONTENT_TYPE)
         os.putenv('CONTENT_LENGTH', CONTENT_LENGTH)
-        os.putenv('SCRIPT_NAME', document_path.replace(os.path.dirname(document_path),''))
+        os.putenv('SCRIPT_NAME', document_path.replace(os.path.dirname(config['HOME_PATH']),''))
         os.putenv('REQUEST_URI', self.env['REQUEST_URI'])
         os.putenv('DOCUMENT_URI', self.env['REQUEST_URI'].split('?')[0])
         os.putenv('DOCUMENT_ROOT', config['HOME_PATH'])
@@ -250,7 +250,7 @@ class SkylakeResponseHandler(object):
         os.putenv('HTTP_ACCEPT_ENCODING', self.env['HTTP_ACCEPT_ENCODING'])
         os.putenv('HTTP_ACCEPT_LANGUAGE', self.env['HTTP_ACCEPT_LANGUAGE'])
         os.putenv('HTTP_COOKIE', self.env['HTTP_COOKIE'])
-        os.putenv('PHP_SELF', document_path.replace(os.path.dirname(document_path),''))
+        os.putenv('PHP_SELF', document_path.replace(os.path.dirname(config['HOME_PATH']),''))
         os.putenv('REQUEST_TIME_FLOAT', str(time.time()))
         os.putenv('REQUEST_TIME', str(time.time()).split('.')[0])
         os.putenv('REDIRECT_STATUS', str(200))
