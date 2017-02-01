@@ -5,7 +5,6 @@ from urllib import unquote
 from getpass import getuser
 from subprocess import Popen, PIPE, STDOUT
 from SkylakeConfig import *
-from nt import chdir
 
 class SkylakeResponseHandler(object):
     def __init__(self, env):
