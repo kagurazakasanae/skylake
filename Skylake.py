@@ -117,7 +117,12 @@ class SkylakeServer(object):
         self.finish_response(response_body, no_CT=no_CT)
 
     def parse_req_header(self, req_data):
-        lines = req_data.split("\n")
+        offset = req_data.find("\r\n\r\n")
+        headers = req_data[:offset].split("\n")
+        body = req_data[offset+4:]
+        headers.append("\r")
+        headers.append(body)
+        lines = headers
         self.req_headers = {}
         self.req_host = ''
         self.req_body = ''
