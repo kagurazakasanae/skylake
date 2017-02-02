@@ -37,7 +37,7 @@ def get_status_info(status):
 
 def get_server_config():
     config = {}
-    config['MAX_LENGTH'] = 102400
+    config['MAX_LENGTH'] = 10485760
     config['TIMED_OUT'] = 10
     config['GZIP'] = True
     config['GZIP_MIN'] = 5
@@ -47,7 +47,9 @@ def get_server_config():
     config['0'] = {}
     config['0']['MODE'] = 'CGI'
     config['0']['CGI_SUFFIX'] = {'.py': 'python.exe','.php': 'php-cgi.exe'}
-    config['0']['HOME_PATH'] = 'D:/phpstudy/www111'
+    config['0']['REWRITE_PATH'] = '/example/wordpress/'
+    config['0']['REWRITE_TO'] = '/phpinfo.php'
+    config['0']['HOME_PATH'] = 'G:/'
     config['0']['DENIED_SUFFIX'] = ('.py')
     config['0']['DEFAULT_PAGE'] = 'index.php,index.html,index.htm'
     config['0']['DIR_LIST'] = True
