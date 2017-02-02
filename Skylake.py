@@ -8,15 +8,18 @@ from SkylakeConfig import *
 class SkylakeServer(object):
     def __init__(self, bind_parameter):
         self.server_config = get_server_config()
+        self.isWindowsSystem = 'Windows' in platform.system()
         self.listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.listen_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.listen_socket.bind(bind_parameter)
         self.listen_socket.listen(2)
         host, port = self.listen_socket.getsockname()[:2]
         self.server_name = socket.gethostname()
-        self.server_addr = socket.gethostbyname(self.server_name)
+        if not self.isWindowsSystem:
+            self.server_addr = out = os.popen("ifconfig | grep 'inet addr:' | grep -v '127.0.0.1' | cut -d: -f2 | awk '{print $1}' | head -1").read()
+        else:
+            self.server_addr = socket.gethostbyname(self.server_name)
         self.server_port = port
-        self.isWindowsSystem = 'Windows' in platform.system()
         self.headers_array = []
         
         

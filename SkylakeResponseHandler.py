@@ -226,9 +226,12 @@ class SkylakeResponseHandler(object):
         
         os.putenv('CONTENT_TYPE', CONTENT_TYPE)
         os.putenv('CONTENT_LENGTH', CONTENT_LENGTH)
-        os.putenv('SCRIPT_NAME', '/'+os.path.abspath(document_path).replace(os.path.abspath(config['HOME_PATH']),''))
+        sn = os.path.abspath(document_path).replace(os.path.abspath(config['HOME_PATH']),'')
+        if not sn.startswith('/'):
+            sn = '/'+sn
+        os.putenv('SCRIPT_NAME', sn)
         os.putenv('REQUEST_URI', self.env['REQUEST_URI'])
-        os.putenv('DOCUMENT_URI', '/'+os.path.abspath(document_path).replace(os.path.abspath(config['HOME_PATH']),''))
+        os.putenv('DOCUMENT_URI', sn)
         os.putenv('DOCUMENT_ROOT', config['HOME_PATH'])
         os.putenv('SERVER_PROTOCOL', 'HTTP/'+self.env['HTTP_VERSION'])
         os.putenv('REQUEST_SCHEME', 'http')
