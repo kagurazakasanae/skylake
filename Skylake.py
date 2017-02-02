@@ -13,8 +13,8 @@ class SkylakeServer(object):
         self.listen_socket.bind(bind_parameter)
         self.listen_socket.listen(2)
         host, port = self.listen_socket.getsockname()[:2]
-        self.server_name = socket.getfqdn(host)
-        self.server_addr = socket.gethostbyname(host)
+        self.server_name = socket.gethostname()
+        self.server_addr = socket.gethostbyname(self.server_name)
         self.server_port = port
         self.isWindowsSystem = 'Windows' in platform.system()
         self.headers_array = []

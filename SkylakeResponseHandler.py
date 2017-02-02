@@ -226,9 +226,9 @@ class SkylakeResponseHandler(object):
         
         os.putenv('CONTENT_TYPE', CONTENT_TYPE)
         os.putenv('CONTENT_LENGTH', CONTENT_LENGTH)
-        os.putenv('SCRIPT_NAME', document_path.replace(os.path.dirname(config['HOME_PATH']),''))
+        os.putenv('SCRIPT_NAME', '/'+os.path.abspath(document_path).replace(os.path.abspath(config['HOME_PATH']),''))
         os.putenv('REQUEST_URI', self.env['REQUEST_URI'])
-        os.putenv('DOCUMENT_URI', self.env['REQUEST_URI'].split('?')[0])
+        os.putenv('DOCUMENT_URI', '/'+os.path.abspath(document_path).replace(os.path.abspath(config['HOME_PATH']),''))
         os.putenv('DOCUMENT_ROOT', config['HOME_PATH'])
         os.putenv('SERVER_PROTOCOL', 'HTTP/'+self.env['HTTP_VERSION'])
         os.putenv('REQUEST_SCHEME', 'http')
@@ -244,6 +244,8 @@ class SkylakeResponseHandler(object):
         for i in self.env['REQUEST_HEADERS'].keys():
             if i.lower() == 'connection':
                 HTTP_CONNECTION = self.env['REQUEST_HEADERS'][i]
+            if i.lower() == 'referer':
+                os.putenv('HTTP_REFERER', self.env['REQUEST_HEADERS'][i])
         os.putenv('HTTP_CONNECTION', HTTP_CONNECTION)
         os.putenv('HTTP_USER_AGENT', self.env['USER-AGENT'])
         os.putenv('HTTP_ACCEPT', self.env['HTTP_ACCEPT'])
@@ -263,6 +265,8 @@ class SkylakeResponseHandler(object):
         headers = output[:output.find("\r\n\r\n")].split("\r\n")
         response_header = []
         statuscode = '200'
+        thismime = 'application/octet-stream'
+        already_encoded = False
         for i in headers:
             t = []
             t.append(i[:i.find(':')])
@@ -273,6 +277,30 @@ class SkylakeResponseHandler(object):
                 statuscode = t[1].split(' ')[0]
                 continue
             response_header.append((t[0], t[1]))
+            if t[0].lower() == 'content-type':
+                thismime = t[1]
+            if t[0].lower() == 'content-encoding':
+                already_encoded = True
+        zipped = False
+        if not already_encoded:
+            if len(self.env['HTTP_ACCEPT_ENCODING']) > 0:
+                accept = self.env['HTTP_ACCEPT_ENCODING'].split(',')
+                for i in accept:
+                    if i.replace(' ','') == 'gzip':
+                        if int(round(len(body)/1024)) >= self.gzip_min and thismime in self.gzip_type:
+                            import gzip
+                            from cStringIO import StringIO
+                            buf = StringIO()
+                            f = gzip.GzipFile(mode='wb', fileobj=buf)
+                            try:  
+                                f.write(body)
+                            finally:  
+                                f.close()
+                            body = buf.getvalue()
+                            zipped = True
+                            break
+            if zipped == True:
+                response_header.append(('Content-Encoding', 'gzip'))
         return statuscode, response_header, body, False
 
     def set_error(self, status, message):
