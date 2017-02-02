@@ -259,10 +259,13 @@ class SkylakeResponseHandler(object):
         os.putenv('REQUEST_TIME_FLOAT', str(time.time()))
         os.putenv('REQUEST_TIME', str(time.time()).split('.')[0])
         os.putenv('REDIRECT_STATUS', str(200))
-        if len(handler) > 0:
-            p = Popen([handler, document_path], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
-        else:
-            p = Popen([document_path], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+        try:
+            if len(handler) > 0:
+                p = Popen([handler, document_path], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+            else:
+                p = Popen([document_path], stdout=PIPE, stdin=PIPE, stderr=STDOUT)
+        except:
+            return self.set_error(500, 'Failed to run CGI program in order to handle this request')
         output = p.communicate(input=self.env['REQUEST_BODY'])[0]
         body = output[output.find("\r\n\r\n")+4:]
         headers = output[:output.find("\r\n\r\n")].split("\r\n")
