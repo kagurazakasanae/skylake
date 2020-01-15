@@ -15,10 +15,13 @@ class SkylakeServer(object):
         self.listen_socket.listen(2)
         host, port = self.listen_socket.getsockname()[:2]
         self.server_name = socket.gethostname()
-        if not self.isWindowsSystem:
-            self.server_addr = out = os.popen("ifconfig | grep 'inet addr:' | grep -v '127.0.0.1' | cut -d: -f2 | awk '{print $1}' | head -1").read()
-        else:
-            self.server_addr = socket.gethostbyname(self.server_name)
+        try:
+            if not self.isWindowsSystem:
+                self.server_addr = out = os.popen("ifconfig | grep 'inet addr:' | grep -v '127.0.0.1' | cut -d: -f2 | awk '{print $1}' | head -1").read()
+            else:
+                self.server_addr = socket.gethostbyname(self.server_name)
+        except:
+            self.server_addr = "127.0.0.1"
         self.server_port = port
         self.headers_array = []
         
